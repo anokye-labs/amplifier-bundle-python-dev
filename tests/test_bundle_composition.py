@@ -269,3 +269,16 @@ def test_python_dev_instructions_has_prerequisites():
     assert "python -m ruff --version" in content, "Must provide verification command"
     # Must contain troubleshooting table
     assert "TOOL-NOT-FOUND" in content, "Must reference TOOL-NOT-FOUND error code"
+
+
+def test_python_dev_agent_has_prerequisites_self_check():
+    """python-dev agent includes prerequisites self-check before capabilities."""
+    content = (ROOT / "agents" / "python-dev.md").read_text()
+    assert "## Prerequisites Self-Check" in content, "Agent must have a '## Prerequisites Self-Check' section"
+    # Must appear before Your Capabilities
+    prereq_pos = content.index("## Prerequisites Self-Check")
+    capabilities_pos = content.index("## Your Capabilities")
+    assert prereq_pos < capabilities_pos, "Prerequisites Self-Check must appear before Your Capabilities"
+    # Must provide install guidance
+    assert "uv add ruff pyright" in content, "Must provide install command"
+    assert "python -m ruff --version" in content, "Must provide verification command"
