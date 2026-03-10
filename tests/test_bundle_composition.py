@@ -251,3 +251,21 @@ def test_expected_files_exist():
     ]
     for path in expected:
         assert (ROOT / path).exists(), f"Missing expected file: {path}"
+
+
+# --- Prerequisite validation ---
+
+
+def test_python_dev_instructions_has_prerequisites():
+    """python-dev-instructions.md includes prerequisites section with install guidance."""
+    content = (ROOT / "context" / "python-dev-instructions.md").read_text()
+    assert "## Prerequisites" in content, "Must have a '## Prerequisites' section"
+    # Prerequisites must appear before Best Practices
+    prereq_pos = content.index("## Prerequisites")
+    best_practices_pos = content.index("## Best Practices")
+    assert prereq_pos < best_practices_pos, "Prerequisites must appear before Best Practices"
+    # Must contain install guidance
+    assert "uv add ruff pyright" in content, "Must provide uv install command"
+    assert "python -m ruff --version" in content, "Must provide verification command"
+    # Must contain troubleshooting table
+    assert "TOOL-NOT-FOUND" in content, "Must reference TOOL-NOT-FOUND error code"
